@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Grafika v R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Jan Caha" />
+    <link rel="stylesheet" href="libs\robot-edits.css" type="text/css" />
+    <link rel="stylesheet" href="libs\robot-fonts-edits.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Grafika v R
+### Jan Caha
+### Interpretace geodat <br/> (28. 2. 2019)
+
+---
+
+
+
+
+
+
+class: inverse, center, middle
+
+# Vektory, seznamy a datové rámce se jmény
+
+---
+  
+# Pojmenované vektory
+  
+
+```r
+x &lt;- c("a" = 1, "b" = 2, "c" = 3)
+x["b"]
+```
+
+```
+## b 
+## 2
+```
+
+```r
+x &lt;- c(5, 6, 7)
+names(x) &lt;- c("a", "b", "c")
+x["c"]
+```
+
+```
+## c 
+## 7
+```
+
+```r
+x[1]
+```
+
+```
+## a 
+## 5
+```
+
+---
+  
+# Pojmenované seznamy
+  
+- identické k vektorům, pouze mohou obsahovat i data různých typů
+
+
+```r
+y &lt;- list("cislo" = 2, "retezec" = "tohle je text", "boolean" = TRUE)
+names(y)
+```
+
+```
+## [1] "cislo"   "retezec" "boolean"
+```
+
+```r
+y
+```
+
+```
+## $cislo
+## [1] 2
+## 
+## $retezec
+## [1] "tohle je text"
+## 
+## $boolean
+## [1] TRUE
+```
+
+---
+  
+# Pojmenované seznamy
+  
+
+```r
+y$cislo
+```
+
+```
+## [1] 2
+```
+
+```r
+y[1]
+```
+
+```
+## $cislo
+## [1] 2
+```
+
+```r
+y[[1]]
+```
+
+```
+## [1] 2
+```
+
+---
+  
+# Datové rámce
+  
+- názvy sloupců (`colnames()`) a řádků (`rownames()`)
+
+```r
+library(tidyverse)
+data("diamonds")
+colnames(diamonds)
+```
+
+```
+##  [1] "carat"   "cut"     "color"   "clarity" "depth"   "table"   "price"  
+##  [8] "x"       "y"       "z"
+```
+
+```r
+rownames(diamonds)[1:10]
+```
+
+```
+##  [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
+```
+
+---
+  
+# Datové rámce
+  
+- na sloupce se lze odkazovat 
+
+```r
+diamonds$carat
+```
+- výsledkem je vektor, takže lze
+
+```r
+mean(diamonds$cut)
+```
+
+- na řádky pouze jako
+
+```r
+diamonds[1,]
+```
+- výsledkem je ale pořád datový rámec
+
+---
+class: inverse, center, middle
+
+# Faktory
+
+---
+  
+# Faktor
+  
+- speciální případ kdy data (většinou textová) zakódujeme pomocí celých čísel
+
+- mohou být buď neseřazené (data nominální) nebo seřazené (data ordinální)
+
+- vychází ze statistických potřeb - výpočty nad daty reprezentující kategorie, např. statistické testy
+
+- v rámci **tidyverse** se pro práci s vektory používají funkce z balíku **forcats** ([https://forcats.tidyverse.org](https://forcats.tidyverse.org/))
+
+- každý faktor má svoje úrovně (levels), které reprezentují konkrétní hodnoty
+
+- R obvykle texty na faktory převádí implicintě, naopak balíky **tidyverse** toto nedělají
+
+---
+  
+# Faktory ukázky
+  
+
+```r
+data("diamonds")
+levels(diamonds$color)
+```
+
+```
+## [1] "D" "E" "F" "G" "H" "I" "J"
+```
+
+- převod z faktoru na text a zpět
+
+```r
+diamonds &lt;- diamonds %&gt;% 
+  mutate(color = as.character(color))
+
+diamonds &lt;- diamonds %&gt;% 
+  mutate(color = as.factor(color))
+
+diamonds &lt;- diamonds %&gt;% 
+  mutate(color = as.ordered(color))
+```
+
+---
+class: inverse, center, middle
+
+# Balík ggplot2
+
+součást tidyverse
+
+https://ggplot2.tidyverse.org/
+
+---
+
+# Základy vizualizace dat
+
+- publikace Fundamentals of Data Visualization &lt;sup&gt;1&lt;/sup&gt;
+
+- zdrojové kódy dostupné [https://github.com/clauswilke/dataviz](https://github.com/clauswilke/dataviz)
+
+- ukázky a příklady 
+
+.footnote[
+[1] 
+Wilke, C. O. (2019). _Fundamentals of Data Visualization_. URL:
+[https://serialmentor.com/dataviz/](https://serialmentor.com/dataviz/).
+]
+
+---
+
+# ggplot2
+
+- grammar of graphics &lt;sup&gt;1&lt;/sup&gt;
+
+- princip propojení proměnných dat a vizualizace &lt;sup&gt;2, 3&lt;/sup&gt;
+
+- grafy jsou principiálně extrémně dlouhými a komplikovanými seznamy, které se teprve při tisku (zobrazení) převádí na grafiku
+
+- extrémně dobře zpracovaná nápovědy + velké množství tutoriálů online
+
+.footnote[
+[1] 
+Wilkinson, L. and G. Wills (2005). _The Grammar of Graphics_. 2nd
+ed. Statistics and Computing. New York: Springer. 690 pp. ISBN:
+978-0-387-24544-7.
+
+[2] 
+Wickham, H. (2015). _ggplot2: Elegant Graphics for Data Analysis_.
+
+[3]
+Grolemund, G. and H. Wickham (2017). _R for Data Science_.
+Sebastopol: O'Reilly Media, Inc.. 522 pp. ISBN: 978-1-4919-1039-9.
+URL: [http://r4ds.had.co.nz/](http://r4ds.had.co.nz/).
+]
+
+---
+
+# Základní struktura
+
+
+```r
+library(ggplot2)
+data("diamonds")
+
+ggplot(diamonds, aes(price, carat)) +
+  geom_point()
+```
+
+- funkce `ggplot()` pro inicializaci grafu, dva základní argumenty - data a mapování dat na grafiku
+
+- funkce `aes()` pro definici propojení dat a grafiky, základ jsou souřadnice `x` a `y`, další proměnné
+jsou univerzální jako např. `color` nebo specifické pro dané `geom_*` (např. `linetype`)
+
+- funkce `geom_*` pro určení typu vytvářené grafiky (v tomto případě bodový graf)
+
+- vždy konzultovat s nápovědou 
+
+---
+
+# Ukázka
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Práce s grafem
+
+
+```r
+plot &lt;- ggplot(diamonds, aes(price, carat)) +
+  geom_point()
+
+plot &lt;- plot + 
+  labs(title = "Diamanty, závislost ceny na karátech", 
+       x = "Cena (USD)", y = "Karáty")
+
+plot
+```
+
+---
+
+# Práce s grafem
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Komplexní příklad
+
+
+```r
+p &lt;- ggplot(diamonds, aes(price, carat, color = color)) +
+  geom_point() +
+  scale_color_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 20000, by = 5000),
+                     limits = c(0, 20000)) +
+  labs(title = "Diamanty, závislost ceny na karátech", 
+       x = "Cena (USD)", y = "Karáty")
+
+p
+```
+
+---
+
+# Komplexní příklad
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Stylování grafu
+
+- buď přidáním kompletních předpřipravených témat `theme_bw()`
+- nebo pomocí funkce `theme()`
+
+
+```r
+p + theme_bw()
+```
+
+---
+
+# Stylování grafu
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Parametry předané do `aes()` a přímo vrstvě
+
+- v `aes()` se jedná o propojení v závistlosti na datech
+- přímo v `geom_*()` se jedná u proměnnou celé vrstvy, např. velikost všech bodů nebo jejich průhlednost
+
+
+```r
+ggplot(diamonds, aes(price, carat, color = color)) +
+  geom_point(aes(size = clarity)) +
+  scale_color_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 20000, by = 5000),
+                     limits = c(0, 20000)) +
+  labs(title = "Diamanty, závislost ceny na karátech", 
+       x = "Cena (USD)", y = "Karáty")
+```
+
+---
+
+# Parametry předané do `aes()` a přímo vrstvě
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Parametry předané do `aes()` a přímo vrstvě
+
+- v `aes()` se jedná o propojení v závistlosti na datech
+- přímo v `geom_*()` se jedná u proměnnou celé vrstvy, např. velikost všech bodů nebo jejich průhlednost
+
+
+```r
+ggplot(diamonds, aes(price, carat, color = color)) +
+  geom_point(size = 0.5) +
+  scale_color_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 20000, by = 5000),
+                     limits = c(0, 20000)) +
+  labs(title = "Diamanty, závislost ceny na karátech", 
+       x = "Cena (USD)", y = "Karáty")
+```
+
+---
+
+# Parametry předané do `aes()` a přímo vrstvě
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Vytvoření série grafů se stejnými nastaveními
+
+
+```r
+details &lt;- list(
+  scale_color_brewer(palette = "Set1"), 
+  scale_x_continuous(breaks = seq(0, 20000, by = 5000),
+                     limits = c(0, 20000)),
+  labs(title = "Diamanty, závislost ceny na karátech", 
+       x = "Cena (USD)", y = "Karáty")
+)
+```
+
+
+```r
+diamonds_DEF &lt;- diamonds %&gt;% 
+  filter(color %in% c("D", "E", "F"))
+
+diamonds_GHIJ &lt;- diamonds %&gt;% 
+  filter(color %in% c("G", "H", "I", "J"))
+```
+
+---
+
+# Vytvoření série grafů se stejnými nastaveními
+
+
+```r
+ggplot(diamonds_DEF, aes(price, carat, color = color)) +
+  geom_point() +
+  details
+```
+
+
+```r
+ggplot(diamonds_GHIJ, aes(price, carat, color = color)) +
+  geom_point() +
+  details
+```
+
+---
+
+# Vytvoření série grafů se stejnými nastaveními
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-30-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Vytvoření série grafů se stejnými nastaveními
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-31-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Facety
+
+- vytvoření několika shodných grafů, přičemž do každého vložíme jen část dat dle speficiké proměnné
+
+- platí veškeré další stylování, které specifikujeme, pouze je výsledek rozdělen na dílčí grafy
+
+
+```r
+ggplot(diamonds, aes(price, carat, color = color)) +
+  geom_point() +
+  facet_wrap(~color)
+```
+
+---
+
+# Facety
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-33-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Facety - komplexnější ukázka
+
+
+```r
+d &lt;- diamonds %&gt;% 
+  select(-color)
+
+ggplot(diamonds, aes(price, carat, color = color)) +
+  geom_point(data = d, color = "grey80", size = 0.75) +
+  geom_point() +
+  facet_wrap(~color)
+```
+
+---
+
+# Facety - komplexnější ukázka
+
+&lt;img src="prezentace_2_files/figure-html/unnamed-chunk-35-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Uložení grafu
+
+
+```r
+# poslední graf
+ggsave("graf.pdf")
+
+# graf z proměnné
+ggsave("graf.png", plot = p)
+```
+
+- další nastavení ohledně rozměrů, dpi atd. viz nápověda
+
+---
+
+# Komplexnější grafy
+
+- je možné kombinovat i vícero vrstev `geom_*` do jednoho grafu, přičemž každá může používat i jiná data
+
+  - každá vrstva `geom_*` příjímá argumenty `data` a `mapping`, buď přímo, nebo je získá z obecné definice `ggplot()`
+  
+- problémem ale je např. ruzné stylování barevných palet pro různé vrstvy
+
+- lze to řešit, ale řešení nebívají triviální
+
+---
+
+# Rozšíření ggplot2
+
+- balíky, které poskytují doplňkovou funkcinalitu pro **ggplot2**
+
+- barevné škály, nové `geom_*` vrstvy či rozšíření a vylepšení funkcionality
+
+- často lze tyto balíky identifikovat dle názvu `gg*`, ale není to vždy pravidlem např. **cowplot**
+- většina těch nejdůležitějších - [http://www.ggplot2-exts.org/gallery/](http://www.ggplot2-exts.org/gallery/)
+
+- pozor např. **cowplot** pokud je načtený do paměti (`library(cowplot)`) mění výchozí design **ggplot2**, což může způsobovat neočekávané výsledky
+
+---
+class: inverse, center, middle
+
+# galerie grafů vytvořených pomocí ggplot2
+
+---
+class: inverse, center, middle
+
+# Děkuji za pozornost!
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

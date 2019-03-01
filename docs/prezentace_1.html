@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Úvod do jazyka R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Jan Caha" />
+    <link rel="stylesheet" href="libs\robot-edits.css" type="text/css" />
+    <link rel="stylesheet" href="libs\robot-fonts-edits.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Úvod do jazyka R
+### Jan Caha
+### Interpretace geodat <br/> (14. 2. 2019)
+
+---
+
+
+
+
+
+
+# Něco o mně
+
+- studium: na katedře Geoinformatiky, Univerzita Palackého v Olomouci (Bc., Mgr., Ph.D, RNDr.)
+- praxe: VŠB-TUO, Mendelova Univerzita v Brně
+- odborné zájmy: 
+  - zpracování nejistoty v GIS
+  - fuzzy logika a fuzzy arimetika
+  - analýzy viditelnosti
+  - data science (se zaměřením na prostorová data/analýzy)
+  - open source (obecně + GIS)
+- jazyky: 
+  - dříve: Java, C#
+  - aktuálně: R, Python
+- moje práce:
+  - [Github](https://github.com/JanCaha)
+  - [ResearchGate](https://www.researchgate.net/profile/Jan_Caha)
+
+---
+
+# Předmět - Interpretace geodat
+
+- aby bylo možné data interpretovat, je nejdříve nutné je umět dobře zpracovat a vizualizovat
+
+- ukázky práce s programy, představující metody a postupy, často předpokládájí existenci ideálně předpřipravených datových sad
+
+- realita dat?
+
+- samotné zpracování dat tématicky "nikam nepatří", tudíž se dost často opomíjí
+
+- cíl předmětu: představení jazyka R, jako jednoho z nejlepších nástrojů na zpracování a vizualizaci dat (i geodat) s důrazem na:
+  - opakovatelnost postupů
+  - dokumentaci procesu zpracování dat
+  - tvorbu vizualizací (interaktivních)
+
+---
+
+# Motivace
+
+- jako geoinformatik věnujete 20-80% pracovního času zpracovávání dat
+
+- každou analýzu budete 5x-10x předělávat, než se dopracujete ke konečnému výsledku 
+
+- rozšiřování obzorů, zkušeností, schopností, znalostí a karierních možností (zajímavé čtení např. [zde](https://medium.com/@Spatial_Impressionism/money-verse-maps-d17882e760dc), [zde](http://mapbrief.com/2012/11/09/if-spreadsheeting-isnt-a-university-major-then-why-is-gis-a-major/), [a tady](http://mapbrief.com/2012/10/25/if-mapping-is-so-big-why-does-gis-feel-so-small/))
+
+---
+
+# Data Science (datová věda)
+
+- interdisciplinární obor propojující věděcké metody, procesy, algoritmy a systémy za účelem extrakce znalostí a pohledů na data, ať už strukturovaná či nikoliv &lt;sup&gt;1&lt;/sup&gt;
+
+- vyžaduje minimálně znalosti datových struktur, algoritmů, databází, statistiky a vizualizace dat
+
+- v širším kontextu se i další odvětví - např. zpracování textu či obrazu, distribuované výpočty, parallelní výpočty, strojové učení, hluboké učení atd.
+
+- specifika: zdroje, otevřenost, konference, kultura
+
+.footnote[
+[1] 
+Dhar, V. (2013). "Data Science and Prediction". In:
+_Communications of the ACM_ 56.12, pp. 64-73. ISSN: 00010782. DOI:
+[10.1145/2500499](https://doi.org/10.1145/2500499).
+]
+
+---
+
+# Data Science 
+
+- dílčí úkoly &lt;sup&gt;1,2&lt;/sup&gt;
+  1. sběr, předpříprava a primární náhledy na data
+  2. reprezentace a transformace dat (zahrnuje jak databázové, tak matematické reprezentace dat)
+  3. výpočty s daty
+  4. modelování dat (obvykle ve smyslu tvorby statistických modelů)
+  5. vizualizace a prezentace dat
+  6. věda o datové vědě
+
+.footnote[
+[1] 
+Grolemund, G. and H. Wickham (2017). _R for Data Science_.
+Sebastopol: O'Reilly Media, Inc.. 522 pp. ISBN: 978-1-4919-1039-9.
+URL: [http://r4ds.had.co.nz/](http://r4ds.had.co.nz/).
+
+[2] 
+Carmichael, I. and J. S. Marron (2018). "Data Science vs.
+Statistics: Two Cultures?" In: _Japanese Journal of Statistics and
+Data Science_. ISSN: 2520-8764. DOI:
+[10.1007/s42081-018-0009-3](https://doi.org/10.1007/s42081-018-0009-3).
+]
+---
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="prezentace_1_files/figure-html/VennDiagram-1.png" alt="Složky datové vědy."  /&gt;
+&lt;p class="caption"&gt;Složky datové vědy.&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# R
+
+- interpretovaný programovací jazyk přístupný v základu především skrze příkazový řádek
+
+- implementace jazyka **S** pod open source licencí
+
+- určený primárně ke zpracování dat a jejich vizualizaci, s výrazným zaměřením na statistiku 
+
+- základní funkcionalita není příliš široká, velká část funkcinality přichází z tzv. balíčků
+
+- centrální sklad balíčků - [CRAN](https://cran.r-project.org/) (Comprehensive R Archive Network)
+
+- [CRAN](https://cran.r-project.org/) je také místem pro stažení samotného R a balíčků
+
+---
+
+# Práce s R
+
+- většinou nepracujeme přímo s příkazovým řádkem R
+
+- využití IDE (Integrated Development Environment), které poskytuje nástroje pro zvýšení komfortu práce s R
+
+- řada IDE zaměřených na R - [Rattle](https://rattle.togaware.com/), [RKWard](https://rkward.kde.org/), [R Commander](http://www.rcommander.com/)
+
+- nicméně téměř standardem a nejpopulárnějším řešením je [RStudio](https://www.rstudio.com/)
+
+- R lze používat několika způsoby
+  - tzv. interaktivní mód, kdy pracujeme "na živo" s daty
+  - programování analýz
+  - programování balíčků
+  
+- nejčastější je kombinace interaktivního módu s programovaním analýz (to budeme předpokládat)
+
+---
+
+# Zdroje informací
+
+- nápověda R + viněty
+
+- knihy např. oficiální seznam na *[webu](https://www.r-project.org/doc/bib/R-books.html)*
+
+- seznam volně dostupných (open source) knih týkajících se R - *[bookdown](https://bookdown.org/)*
+
+- blogy - např. *[R--bloggers](https://www.r-bloggers.com/)*
+
+- twitter - obzvláště např. *[Mara Averick](https://twitter.com/dataandme?lang=en)*, ale i další
+
+- *[Stack overflow](https://stackoverflow.com/)* a jeho varianty
+
+- *[Google](https://google.com/)*
+
+---
+
+# Instalace
+
+- R - https://cran.r-project.org/
+
+- RStudio - https://www.rstudio.com/products/rstudio/download/
+
+- RTools - https://cran.r-project.org/bin/windows/Rtools/
+
+- RTools není úplně nezbytný, ale je třeba, pokud chcete instalovat balíky, které nejsou přímo dostupné na CRAN - např. z [GitHubu](https://github.com/)
+
+---
+class: inverse, center, middle
+
+# RStudio
+
+---
+
+# Základní orientace v rozhraní
+
+- konzole
+- skripty
+- prostředí
+- soubory
+- grafy
+- balíky
+- nápověda
+
+---
+
+# Projekt 
+
+- základní organizační jednotka pro práci
+- výrazně zlepšuje komfort práce
+- umožňuje vytvářet přenositelné pracovní složky
+- detailněji o organizaci projektu později
+
+---
+class: inverse, center, middle
+
+# Základy jazyka R
+
+---
+
+# Základní typy dat 
+
+- jednoduché proměnné
+
+
+```r
+x &lt;- 5.2
+typeof(x)
+```
+
+```
+## [1] "double"
+```
+
+```r
+y &lt;- as.integer(2)
+typeof(y)
+```
+
+```
+## [1] "integer"
+```
+
+---
+
+# Základní typy dat 
+
+
+```r
+x &lt;- "řetězec"
+typeof(x)
+```
+
+```
+## [1] "character"
+```
+
+```r
+x &lt;- TRUE
+typeof(x)
+```
+
+```
+## [1] "logical"
+```
+
+---
+
+# Vektor
+
+
+```r
+v &lt;- c(5.2, 4.9, 3.1, -0.4)
+v
+```
+
+```
+## [1]  5.2  4.9  3.1 -0.4
+```
+
+.highlight[
+- ale pozor! pokud nejsou všechny prvky stejného typu, pak se typ změní na nejreprezentativnější
+]
+
+
+```r
+v &lt;- c(5.2, 4.9, 3.1, -0.4, TRUE, "a")
+v
+```
+
+```
+## [1] "5.2"  "4.9"  "3.1"  "-0.4" "TRUE" "a"
+```
+
+---
+
+# Vektor
+
+- jednotlivé prvky lze získat
+
+```r
+v[3]
+```
+
+```
+## [1] "3.1"
+```
+
+```r
+v[5]
+```
+
+```
+## [1] "TRUE"
+```
+
+---
+# Seznam
+
+- umožňuje ukládat smíšené typy prvků
+
+
+```r
+l &lt;- list(5, 4.5, "a", FALSE)
+l
+```
+
+```
+## [[1]]
+## [1] 5
+## 
+## [[2]]
+## [1] 4.5
+## 
+## [[3]]
+## [1] "a"
+## 
+## [[4]]
+## [1] FALSE
+```
+
+---
+# Seznam
+
+- jednotlivé prvky lze získat podobně jako u vektorů
+- v jednoduché podobě vrací vždy seznam 
+
+
+```r
+l[1]
+```
+
+```
+## [[1]]
+## [1] 5
+```
+
+- pokud chceme přímo hodnotu, pak musíme použít operátor `[[]]` pro rozložení seznamu
+
+
+```r
+l[[1]]
+```
+
+```
+## [1] 5
+```
+
+---
+
+# Matematické a logické operátory
+
+- `+, -, *, /`
+- `^` nebo `**`
+- `%%` modulo
+- `%/%` celočíselné dělení
+- `==, &lt;, &gt;, &lt;=, &gt;=, !=`
+- `!, |, &amp;` zápor, nebo, a
+- speciální operátor `%in%` pro vyhledávání ve vektorech a seznamech
+
+---
+
+# Funkce
+
+- jak matematické, např. `cos()`, `sin()`, `log()` atd., ale i funkce pro zpracování dat `sort()`
+
+- většinou vektorizované, takže lze provést
+
+- na funkce se lze odkazovat i `balik::funkce()`, nepoužívá se často ale lze na tento zápis narazit
+
+
+```r
+a &lt;- c(4, 5, 3.5)
+b &lt;- sin(a)
+b
+```
+
+```
+## [1] -0.7568025 -0.9589243 -0.3507832
+```
+---
+
+# Komentáře
+
+- v kódu R se zapisují pomocí `#`
+
+
+```r
+# vstupní náhodný vektor o 5 číslech
+x &lt;- runif(5, 0, 1)
+
+# funkce pro výpočet logaritmu o základu 10
+y &lt;- log(x, base = 10)
+
+# tisk výsledku
+y
+```
+
+```
+## [1] -0.21618895 -0.01934217 -0.36741911 -0.56149619 -1.48536579
+```
+
+---
+
+# Komplexní datové struktury
+
+- 2D struktury pro uložení dat - matice,  datové rámce (`data.frame`)
+
+- v maticích musí být všechny prvky stejného typu, v datovém rámci se mohou jednotlivé sloupce lišit
+
+- pro zpracování dat se obvykle používá `data.frame`, či jeho modernější verze `tibble`
+
+- s daty v této podobě se budeme setkávat v při zpracování dat nejčastěji
+
+
+```r
+data("mtcars")
+View(mtcars)
+```
+
+---
+
+# `Data.frame` názvy proměnných
+
+- v `data.frame` (`tibble`) mají povinně sloupce názvy (případně je přiřazuje R)
+
+- teoreticky je možné libovolné pojmenování sloupce, ale pokud obsahuje mezeru nebo nestandardní znaky (české) tak je nelze zapisovat jednodušše 
+
+
+```r
+mtcars$mpg
+
+mtcars$`míle na galon`
+```
+
+- ideální je se těmto názvům vyhnout a předcházet problémům
+
+---
+
+# Důležité funkce
+
+- kromě `data()` a `View()`
+
+- instalace balíků a jejich načtení do R
+
+
+```r
+install.packages("nycflights13")
+library(nycflights13)
+```
+
+
+```r
+data("flights")
+View(flights)
+```
+
+
+---
+class: inverse, center, middle
+
+# Tidyverse
+
+---
+
+# Tidyverse
+
+- pojem **tidyverse** označuje skupinu balíků založených na společné celkové filozofii designu funkcí a odvozené od principu **tidy dat**
+
+- pojem **tidy data** zavedl Hadley Wickham &lt;sup&gt;1&lt;/sup&gt;, jeden z nejvýznamnějších vývojařů balíků
+
+- **tidy data* označují data, kde:
+  - každá proměnná tvoří jeden sloupec
+  - každé pozorování (záznam) tvoří jeden řádek
+  - každá hodnota má svoji buňku
+  - každý typ pozorování je ve vlastní tabulce
+- koncept rámcově odpovídá třetí normální formě z databázové teorie
+
+.footnote[
+[1] 
+Wickham, H. (2014). "Tidy Data". In: _Journal of Statistical
+Software_ 46.10, pp. 1-23. ISSN: 1548-7660. DOI:
+[10.18637/jss.v059.i10](https://doi.org/10.18637/jss.v059.i10).
+pmid: pmid. URL:
+[https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html).
+]
+
+---
+
+# Principy tidyverse
+
+- problém **base R** je často nejednotnost a nekonzistence příbuzných funkcí, chybí společný design
+
+- složité pro uživatele, neboť bylo třeba často hledat v nápovědách a tutoriálech
+
+- funkce příjímají a poskytují přednostně **tidy data**, případně existují varianty funkcí pro výstup vhodného typu dat
+
+- značná část funcí podporuje vytváření tzv. *pipeline*, "spřažení" funkcí do delších celků, které ale zůstavají čitelné
+
+- metabalík, který obsahuje velkou část funkcionality pro "každodenní" práci s daty
+
+
+```r
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+---
+
+# Pipeline
+
+- klasický zápis se zanořováním funkcí
+
+
+```r
+log(sin(seq(0.1, 1, by = 0.15)), base = 2)
+```
+
+```
+## [1] -3.3243334 -2.0150595 -1.3606073 -0.9359802 -0.6343798 -0.4125766
+## [7] -0.2490146
+```
+
+- zapis pipeline pomocí operátoru `%&gt;%` (z balíku `magrittr`, který patří do `tidyverse`)
+- prvek před operátorem se předá jako první argument do funkce následující po operátoru
+- zbylé argumenty funkce se uvadějí jako obvykle
+
+
+```r
+library(magrittr)
+seq(0.1, 1, by = 0.15) %&gt;% 
+  sin() %&gt;%
+  log(base = 2)
+```
+
+```
+## [1] -3.3243334 -2.0150595 -1.3606073 -0.9359802 -0.6343798 -0.4125766
+## [7] -0.2490146
+```
+
+---
+class: inverse, center, middle
+
+# Balík dplyr
+
+součást tidyverse
+
+https://dplyr.tidyverse.org/
+
+---
+
+# dplyr
+
+- hlavní balík pro operace s daty
+
+- tzv. gramatika pro práci s daty &lt;sup&gt;1&lt;/sup&gt;, operacím odpovídají slovesa
+
+- díky velice dobře optimalizovanému kódu na pozadí je rychlý a efektivní i při práci s velkým objemem dat
+
+- ukážeme si základní funkce, ale balík jich obsahuje výrazně více
+
+.footnote[
+[1] 
+Wickham, H, R. Francois, L. Henry, et al. (2018). _dplyr: A
+Grammar of Data Manipulation_. R package version 0.7.8. URL:
+[https://CRAN.R-project.org/package=dplyr](https://CRAN.R-project.org/package=dplyr).
+]
+
+---
+
+# Data 
+
+- budeme pracovat s datovou sadou `diamonds` z balíku `ggplo2` (součást `tidyverse`)
+
+
+```r
+data("diamonds")
+
+View(diamonds)
+```
+
+
+---
+
+# Filtrování dat dle pozice
+
+- funkce `slice`, parametrem je buď číslo řádku, nebo vektor těchto čísel
+- záporné hodnoty vynechají tyto prvky ze selekce
+
+
+```r
+diamonds %&gt;% 
+  slice(5:15) %&gt;% 
+  View()
+
+diamonds %&gt;% 
+  slice(c(1,3,5,7,9)) %&gt;% 
+  View()
+
+diamonds %&gt;% 
+  slice(-100:-nrow(diamonds)) %&gt;% 
+  View()
+```
+
+---
+
+# Filtrování dle hodnoty proměnné
+
+- funkce `filter`, jednotlivé parametry jsou podmínky, které se spojí pomocí operátoru `and`
+- pokud chceme operátor `or` je třeba ho explicitně zapsat
+- lze explicitně zapsat i operátor `and`
+- pomocí `()` lze zapisovat i velice komplexní podmínky
+
+
+```r
+diamonds_e &lt;- diamonds %&gt;% 
+  filter(color == "E")
+
+diamonds %&gt;% 
+  filter(carat &gt; 3, cut == "Ideal") %&gt;% 
+  View()
+
+diamonds %&gt;% 
+  filter(cut == "Ideal" | price &gt; 2000) %&gt;% 
+  View()
+
+diamonds %&gt;% 
+  filter((price &gt; 15000 | cut == "Ideal") &amp; carat &gt; 3) %&gt;% 
+  View()
+```
+
+---
+
+# Výběr prvků podle `\(n\)` hodnot ve sloupci
+
+- funkce `top_n`
+- nemusí vracet přesně `\(n\)` prvků, pokud je shoda v hodnotě na posledním místě, může být prvků více
+- lze využít i pro výběr minima, buď uvedením negativní hodnoty počtu prvků nebo s využitím funkce `desc` na výběrovém sloupci
+- prvky vybere, ale neřadí!
+
+
+```r
+diamonds %&gt;% 
+  top_n(5, carat)
+
+# výběr minima
+diamonds %&gt;% 
+  top_n(-10, price)
+
+diamonds %&gt;% 
+  top_n(10, desc(price))
+```
+---
+
+# Seřazení `data.frame`
+
+- funce `arrange`
+
+- lze uvést vícero sloupců, řadí se podle pořadí, další mají roli v případě shody v předchozích
+
+
+```r
+diamonds %&gt;% 
+  arrange(desc(price)) %&gt;% 
+  View()
+
+diamonds %&gt;% 
+  arrange(desc(price), cut) %&gt;% 
+  View()
+```
+
+---
+
+# Výběr pouze specifických sloupců z datasetu
+
+- funkce `select`
+- výčet znamená, které sloupce mají zůstat
+- výčet se zmaménkem `-` tyto sloupce odstraní
+- doporučení - buď uvádět, co ponechat, nebo co smazat - nemíchat!
+
+
+```r
+data_pro_dalsi_analyzu &lt;- diamonds %&gt;% 
+  select(color, cut, price) %&gt;% 
+  filter(price &gt; 15000)
+
+data_pro_dalsi_analyzu1 &lt;- diamonds %&gt;% 
+  select(-color, -cut, -price) %&gt;% 
+  filter(price &gt; 15000)
+```
+
+---
+
+# Vytvoření nového sloupce
+
+- funkce `mutate`
+
+- jednotlivé argumenty jsou nové sloupce
+
+- ve vzorci lze používat libovolné funce R
+
+
+```r
+diamonds_new &lt;- diamonds %&gt;% 
+  mutate(price_per_carat = price / carat,
+         volume = x * y * z)
+```
+
+---
+
+# Vytvoření skupin v datech
+
+- funkce `group_by`
+
+- určujeme podle kterých sloupců májí být vytvořený skupiny
+
+- samotná funkce na data "nemá vliv", alespoň z vizuálního hlediska, nicméně z funkčního jsou po této operaci data zcela jiná
+
+- často se pojí s funkcí `summarise` (viz další slajd)
+
+
+```r
+diamonds_grouped &lt;- diamonds %&gt;% 
+  group_by(color, cut)
+```
+
+---
+
+# Výpočet charakteristik skupiny
+
+- funkce `summarise` ale i `summarize`
+
+- výpočet proměnných specificky pro každou skupinu vytvořenou pomocí funkce `group_by`
+
+
+```r
+diamonds_grouped &lt;- diamonds_grouped %&gt;% 
+  summarise(mean_price = mean(price),
+            median_carat = median(carat),
+            sum_price = sum(price),
+            count = n())
+
+View(diamonds_grouped)
+```
+
+---
+
+# Propojení tabulek pomocí joinů
+
+- klasické nástroje pro propojení tabulek pomocí klíčových atributů
+
+- funkce `inner_join`, `left_join`, `right_join`, `full_join`, `semi_join`, `anti_join`
+
+- důležitý parameter `by`, uvádí se buď název proměnné, nebo v podobě `by = c("prom_tab_1" = "prom_tab_2")` nebo pokud chceme omezi tak pouze `by = "promenna"`
+
+
+```r
+library(nycflights13)
+
+data("flights")
+data("airlines")
+
+joined_data &lt;- flights %&gt;% left_join(airlines, by = "carrier")
+
+View(joined_data)
+```
+
+---
+
+# Další funcionalita dplyr
+
+- v helpu
+
+- např. funkce `distinct`, `if_else`, `sample`, `transmute`
+
+- příklady ve vinětách
+
+- a další
+
+---
+class: inverse, center, middle
+
+# Děkuji za pozornost!
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
