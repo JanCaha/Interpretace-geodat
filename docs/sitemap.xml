@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>http://localhost:4000/Interpretace-geodat/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/Interpretace-geodat/kody/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/Interpretace-geodat/materialy/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/Interpretace-geodat/prezentace/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/Interpretace-geodat/prezentace_files/prezentace_1.html</loc>
+<lastmod>2019-03-01T10:30:52+01:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/Interpretace-geodat/prezentace_files/prezentace_2.html</loc>
+<lastmod>2019-03-01T10:32:48+01:00</lastmod>
+</url>
+</urlset>
