@@ -264,6 +264,8 @@ typeof(x)
 
 # Vektor
 
+- definice pomocí funkce `c()`
+
 
 ```r
 v &lt;- c(5.2, 4.9, 3.1, -0.4)
@@ -275,7 +277,7 @@ v
 ```
 
 .highlight[
-- ale pozor! pokud nejsou všechny prvky stejného typu, pak se typ změní na nejreprezentativnější
+- pozor! pokud nejsou všechny prvky stejného typu, pak se typ změní na nejreprezentativnější
 ]
 
 
@@ -313,6 +315,8 @@ v[5]
 ---
 # Seznam
 
+- definice funkcí `list()`
+
 - umožňuje ukládat smíšené typy prvků
 
 
@@ -339,6 +343,7 @@ l
 # Seznam
 
 - jednotlivé prvky lze získat podobně jako u vektorů
+
 - v jednoduché podobě vrací vždy seznam 
 
 
@@ -413,7 +418,7 @@ y
 ```
 
 ```
-## [1] -0.21618895 -0.01934217 -0.36741911 -0.56149619 -1.48536579
+## [1] -0.43893695 -0.16308811 -0.30676860 -0.07012713 -0.44859227
 ```
 
 ---
@@ -586,7 +591,7 @@ Grammar of Data Manipulation_. R package version 0.7.8. URL:
 
 # Data 
 
-- budeme pracovat s datovou sadou `diamonds` z balíku `ggplo2` (součást `tidyverse`)
+- budeme pracovat s datovou sadou `diamonds` z balíku `ggplot2` (součást `tidyverse`)
 
 
 ```r
@@ -600,7 +605,7 @@ View(diamonds)
 
 # Filtrování dat dle pozice
 
-- funkce `slice`, parametrem je buď číslo řádku, nebo vektor těchto čísel
+- funkce `slice()`, parametrem je buď číslo řádku, nebo vektor těchto čísel
 - záporné hodnoty vynechají tyto prvky ze selekce
 
 
@@ -622,10 +627,31 @@ diamonds %&gt;%
 
 # Filtrování dle hodnoty proměnné
 
-- funkce `filter`, jednotlivé parametry jsou podmínky, které se spojí pomocí operátoru `and`
-- pokud chceme operátor `or` je třeba ho explicitně zapsat
-- lze explicitně zapsat i operátor `and`
-- pomocí `()` lze zapisovat i velice komplexní podmínky
+- funkce `filter()`, jednotlivé parametry jsou podmínky, které se spojí pomocí operátoru `and`
+
+- pokud chceme operátor `or` je třeba ho explicitně zapsat (`|`)
+
+- lze explicitně zapsat i operátor `and` (`&amp;`)
+
+
+```r
+diamonds_e &lt;- diamonds %&gt;% 
+  filter(color == "E")
+
+diamonds %&gt;% 
+  filter(carat &gt; 3, cut == "Ideal") %&gt;% 
+  View()
+
+diamonds %&gt;% 
+  filter(cut == "Ideal" | price &gt; 2000) %&gt;% 
+  View()
+```
+
+---
+
+# Filtrování dle hodnoty proměnné
+
+- pomocí závorek `()` lze zapisovat i velice komplexní podmínky
 
 
 ```r
@@ -649,11 +675,13 @@ diamonds %&gt;%
 
 # Výběr prvků podle `\(n\)` hodnot ve sloupci
 
-- funkce `top_n`
-- nemusí vracet přesně `\(n\)` prvků, pokud je shoda v hodnotě na posledním místě, může být prvků více
-- lze využít i pro výběr minima, buď uvedením negativní hodnoty počtu prvků nebo s využitím funkce `desc` na výběrovém sloupci
-- prvky vybere, ale neřadí!
+- funkce `top_n()`, nemusí vracet přesně `\(n\)` prvků, pokud je shoda v hodnotě na posledním místě, může být prvků více
 
+- lze využít i pro výběr minima, buď uvedením negativní hodnoty počtu prvků nebo s využitím funkce `desc()` na výběrovém sloupci
+
+.highlight[
+- prvky vybere, ale neřadí!
+]
 
 ```r
 diamonds %&gt;% 
@@ -670,7 +698,7 @@ diamonds %&gt;%
 
 # Seřazení `data.frame`
 
-- funce `arrange`
+- funce `arrange()`
 
 - lze uvést vícero sloupců, řadí se podle pořadí, další mají roli v případě shody v předchozích
 
@@ -689,9 +717,12 @@ diamonds %&gt;%
 
 # Výběr pouze specifických sloupců z datasetu
 
-- funkce `select`
+- funkce `select()`
+
 - výčet znamená, které sloupce mají zůstat
-- výčet se zmaménkem `-` tyto sloupce odstraní
+
+- výčet se znaménkem - tyto sloupce odstraní
+
 - doporučení - buď uvádět, co ponechat, nebo co smazat - nemíchat!
 
 
@@ -709,9 +740,9 @@ data_pro_dalsi_analyzu1 &lt;- diamonds %&gt;%
 
 # Vytvoření nového sloupce
 
-- funkce `mutate`
+- funkce `mutate()`
 
-- jednotlivé argumenty jsou nové sloupce
+- jednotlivé argumenty funkce jsou nové sloupce
 
 - ve vzorci lze používat libovolné funce R
 
@@ -726,13 +757,13 @@ diamonds_new &lt;- diamonds %&gt;%
 
 # Vytvoření skupin v datech
 
-- funkce `group_by`
+- funkce `group_by()`
 
 - určujeme podle kterých sloupců májí být vytvořený skupiny
 
 - samotná funkce na data "nemá vliv", alespoň z vizuálního hlediska, nicméně z funkčního jsou po této operaci data zcela jiná
 
-- často se pojí s funkcí `summarise` (viz další slajd)
+- často se pojí s funkcí `summarise()` (viz další slajd)
 
 
 ```r
@@ -744,9 +775,9 @@ diamonds_grouped &lt;- diamonds %&gt;%
 
 # Výpočet charakteristik skupiny
 
-- funkce `summarise` ale i `summarize`
+- funkce `summarise()` ale i `summarize()`
 
-- výpočet proměnných specificky pro každou skupinu vytvořenou pomocí funkce `group_by`
+- výpočet proměnných specificky pro každou skupinu vytvořenou pomocí funkce `group_by()`
 
 
 ```r
@@ -765,9 +796,9 @@ View(diamonds_grouped)
 
 - klasické nástroje pro propojení tabulek pomocí klíčových atributů
 
-- funkce `inner_join`, `left_join`, `right_join`, `full_join`, `semi_join`, `anti_join`
+- funkce `inner_join()`, `left_join()`, `right_join()`, `full_join()`, `semi_join()`, `anti_join()`
 
-- důležitý parameter `by`, uvádí se buď název proměnné, nebo v podobě `by = c("prom_tab_1" = "prom_tab_2")` nebo pokud chceme omezi tak pouze `by = "promenna"`
+- důležitý parameter `by`, uvádí se buď název proměnné, nebo v podobě `by = c("prom_tab_1" = "prom_tab_2")` nebo pokud chceme omezit tak pouze `by = "promenna"`
 
 
 ```r
@@ -776,7 +807,8 @@ library(nycflights13)
 data("flights")
 data("airlines")
 
-joined_data &lt;- flights %&gt;% left_join(airlines, by = "carrier")
+joined_data &lt;- flights %&gt;% 
+  left_join(airlines, by = "carrier")
 
 View(joined_data)
 ```
@@ -787,7 +819,7 @@ View(joined_data)
 
 - v helpu
 
-- např. funkce `distinct`, `if_else`, `sample`, `transmute`
+- např. funkce `distinct()`, `if_else()`, `sample()`, `transmute()`
 
 - příklady ve vinětách
 
