@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Zpracování a čistění dat   (praktické úlohy)</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jan Caha" />
+    <link rel="stylesheet" href="libs\robot-edits.css" type="text/css" />
+    <link rel="stylesheet" href="libs\robot-fonts-edits.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Zpracování a čistění dat <br/> (praktické úlohy)
+### Jan Caha
+### Interpretace geodat <br/> (14. 3. 2019)
+
+---
+
+
+
+
+
+
+class: inverse, center, middle
+
+# Načítání a ukládání dat
+
+---
+  
+# Balíky readr, readxl a writexl
+  
+- **readr** a **readxl** jsou součástí **tidyverse**, **writexl** nikoliv (načítat samostatně)
+
+- funkce `read_*` a `write_*` pro ukládání a načítání různých formátů
+
+- funkce vrací a přijímají `data.frame`
+
+
+```r
+df &lt;- read_csv("soubor.csv")
+
+write_xlsx(df, "soubor.xlsx")
+```
+
+---
+
+# Balík haven
+
+- pro načítání dat z jiných statistických softwarů
+
+- pozor na odlišnosti ve způsobech zpracování a reprezentace dat 
+
+- příbuzný balík se stejnou funkcionalitou je **foreign**
+
+---
+
+class: inverse, center, middle
+
+# Organizace a struktura projektů
+
+---
+
+# Projekt
+
+- snaha o dodržení logiky - 1 zadaní, úkol = 1 RStudio projekt
+
+- RStudio projekt - složka s několika spefickými soubory a složkami
+  - `.Rproj.user`
+  - `.Rhistory`
+  - `.RData` - tomu se snažíme vyhnout - nastavení RStudia
+  - `?.Rproj` - asociační soubor pomocí něhož lze projekt přímo otevřít v RStudiu 
+  
+- zbytek struktury je na uživateli
+
+- pozor na mezery v cestách, ne všechny balíky se s nimi umí rozumně vypořádat
+
+---
+
+# Vhodná struktura projektu
+
+- systém složek, který zjednodušuje a organizuje práci
+
+- nemusí fungovat zcela obecně, ale jako výchozí bod ho lze dopručit
+
+- složky
+  - `data` 
+  - `data/raw` - původní data, bez jakýchkoliv uživatelských zásahů
+  - `data/produced` - upravená či vytvořená data, v rámci řešení 
+  - `skripts` - `.R` soubory s dílčími R skripty
+  - `reports` - složka obsahující surové a zkompilované zprávy v ruzných formátech
+
+- lze rozšiřovat o další složky dle potřeb (např `graphs`)
+
+---
+
+# Balík here
+
+- malý a velice prostý balík, který ale neuvěřitelně zjednodušuje proces odkazování se na soubory v projektu
+
+- funkce `here::here()` - vysvětlení syntaxe, `\(\dots\)` argument
+  - výsledkem je absolutní cesta k souboru
+  
+- jako argumenty funkce uvadíme složky, či soubor a to vždy relativně vůči tzv. "root" složce
+
+- odpadá potřeba řešit umístění spouštěcího souboru a relativizovat cestu vůči němu, celkově nezávislé na lokálním umístění projektu
+
+
+```r
+here::here("data", "raw", "dataset_1.csv")
+here::here("data", "produced", "demografie", "okresy.xlsx")
+```
+
+---
+
+# Funkce `source`
+
+- možnost propojení dvou a více `.R` souborů
+
+- funkce `source` efektivně spustí odkazovaný soubor
+
+- lze využít např. pro načítání balíků, funkcí nebo dat, které budou potřebné v různých dalších souborech
+
+- v případě že se v odkazovaném `.R` souboru objevují české znaky - např. názvy proměnných atd. je nezbytné nastavení parametru `encoding` na hodnotu `utf8`
+
+
+```r
+source(here::here("functions", "_initialization.R"), 
+       encoding = "utf8")
+```
+
+- ukázka s vytvořením inicializačního souboru
+
+---
+
+class: inverse, center, middle
+
+# Samostatné úkoly
+
+---
+
+# Obecné zadání
+
+- z webu [https://jancaha.github.io/Interpretace-geodat/](https://jancaha.github.io/Interpretace-geodat/) sekce **Zdrojové kódy** si stáhněte ukázkový projekt s daty
+
+- používaná data jsou ČSÚ získaná z [https://data.gov.cz/](https://data.gov.cz/)
+
+# Úkol č. 1
+
+Načtěte soubor `STA01_1997_2017.csv` z příslušné složky. Zkontrolujte jeho strukturu. Zjistěte celkové počty dokončených rodinných domů v jednotlivých obcích za všechny roky a výsledek uložte do excelovského souboru. Vytvořte sloupcový graf počtu dokončených bytů v Ostravě pro jednotlivé roky a uložte jej do pdf. 
+
+Nápovědy:
+
+```r
+# při načítání csv použijte ve funkci argument
+col_types = cols(tb_txt = "c")
+
+# rok lze vyseparovat z datových sloupců
+library(lubridate)
+year(casref_od)
+```
+
+---
+
+# Úkol č. 2
+
+Ze stejných dat jako v předchozím úkolu vytvořte průměrnou a mediánovou hodnotu počtu dokončených bytových domů pro jednotlivé roky. V potaz berte pouze obce, kde se nějaké bytové domy stavěly. Výsledek uložte do csv. 
+
+---
+
+# Úkol č. 3
+
+K datům z předchozího cvičení si navíc načtěte soubor `obce_okresy_kraje.xlsx`. Připojde k obcím informaci o okresech a krajích. Vytvořte `data.frame` sumarizující počet vytvořených bytových jednotek s ohledem na rok, kraj a typ bytových jednotek. Výsledek uložte do souboru dle vašeho uvážení. 
+
+Vývoj počtu rodiných domů v čase pro Prahu a Středočeský kraj zvizualizujte do liniového grafu. 
+
+Nápovědy:
+
+```r
+# v rámci funkce mutate lze měnit i typy uložení dat, např. použitím funkce
+as.integer()
+
+# parameter by joinu bude mít podobu
+by = c("vuzemi_kod" = "kod_obec")
+```
+
+---
+
+class: inverse, center, middle
+
+# Balík tidyr
+
+---
+
+# Funkce gather a spread
+
+- nejužitečnější, ale i zbytek poskytuje zajímavé funkce
+
+- `spread()` - vytváří tabulky širší a kratší než původní, parametr `key` udává názvy nových sloupců, `value` pak hodnoty pro řádky
+
+- `gather()`- vytváří tabulky delší a užší než původní, `key` udává název nově vytvořeného sloupce kategorií, `value` pak název sloupce hodnot, za `...` se uvadí sloupce, které se budou spojovat
+
+- dobře popsáno v [https://r4ds.had.co.nz/tidy-data.html](https://r4ds.had.co.nz/tidy-data.html)
+
+---
+
+# Úkol č. 4
+
+Data uložená na konci cvičení 3 načtěte. 
+
+Pomocí funkce `spread` vytvořte výsledek, který bude pro každý rok ve 3 sloupcích shrnovat jednotlivé typy staveb.
+
+Pomocí stejné funkce tentokrát vytvořte výsledek, kde budou sloupce reprezentovat jednotlivé roky.
+
+Z vytvořeného výsledku si ponechte pouze sloupce kraje, typu vystavby a roky 1997-1999. Pomocí funkce `gather()` zkuste z těchto sloupců roků vytvořit opět `data.frame` stejného typu, s jakým jsme začali.
+
+---
+
+class: inverse, center, middle
+
+# Děkuji za pozornost!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
